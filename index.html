@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IrisOS – the OS with an AI that lives inside it</title>
+<meta name="description" content="IrisOS is a Linux distribution based on CachyOS with Iris, a local voice AI that can see, click, type and help you – fully offline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1113; --bg2: #15181b; --card: #1a1d21; --line: #2a2e33;
+    --text: #e9ebec; --dim: #9aa0a6; --accent: #e9ebec; --ok: #7bd88f;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  nav .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .5px; text-decoration: none; }
+  nav .brand b { color: var(--dim); font-weight: 800; }
+  nav .links a { color: var(--dim); text-decoration: none; margin-left: 22px; font-size: 15px; }
+  nav .links a:hover { color: var(--text); }
+
+  /* kocka Iris */
+  .cube { width: var(--s); height: var(--s); border-radius: calc(var(--s) * .26); background: #1b1a23;
+          border: 1px solid rgba(255,255,255,.12); position: relative; box-shadow: 0 0 calc(var(--s)*.5) rgba(255,255,255,.08); flex: none; }
+  .cube i { position: absolute; top: 34%; width: 26%; height: 26%; background: var(--text); border-radius: 22%; animation: blink 4.2s infinite; }
+  .cube i:first-child { left: 20%; } .cube i:last-child { right: 20%; }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
+  .hero .cube { animation: float 5s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-10px); } }
+
+  .hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; padding: 70px 0 60px; }
+  .hero h1 { font-size: clamp(36px, 6vw, 62px); line-height: 1.05; margin: 0 0 18px; font-weight: 800; letter-spacing: -1px; }
+  .hero h1 span { color: var(--dim); }
+  .hero p.lead { font-size: 19px; color: var(--dim); margin: 0 0 30px; max-width: 34em; }
+  .hero .art { display: flex; justify-content: center; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 24px; border-radius: 999px; font-weight: 600; text-decoration: none;
+         border: 1px solid var(--line); background: transparent; color: var(--text); cursor: pointer; font-size: 15px; }
+  .btn.primary { background: var(--text); color: #121417; border-color: var(--text); }
+  .btn:hover { filter: brightness(1.12); }
+  .meta { margin-top: 16px; color: var(--dim); font-size: 14px; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.5px; }
+  .sub { color: var(--dim); margin: 0 0 30px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .card h3 { margin: 0 0 6px; font-size: 17px; }
+  .card p { margin: 0; color: var(--dim); font-size: 15px; }
+  .card .ico { font-size: 22px; margin-bottom: 10px; }
+
+  .steps { counter-reset: s; display: grid; gap: 14px; }
+  .step { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
+  .step::before { content: counter(s); width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-weight: 600; color: var(--dim); }
+  .step h3 { margin: 4px 0 4px; font-size: 17px; }
+  .step p { margin: 0; color: var(--dim); }
+  pre, code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
+  pre { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; margin: 10px 0 0; position: relative; }
+  code { background: var(--bg2); padding: 2px 6px; border-radius: 6px; }
+  pre code { background: none; padding: 0; }
+  .copy { position: absolute; top: 8px; right: 8px; font: 12px Inter; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--dim); cursor: pointer; }
+
+  .dl { display: grid; gap: 10px; }
+  .dl a.file { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--line);
+               border-radius: 12px; padding: 14px 18px; text-decoration: none; }
+  .dl a.file:hover { border-color: #444a51; }
+  .dl .size { color: var(--dim); font-size: 14px; }
+  .note { color: var(--dim); font-size: 14px; }
+  footer { padding: 40px 0 60px; color: var(--dim); font-size: 14px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-top: 30px; text-align: left; }
+    .hero .art { order: -1; justify-content: flex-start; }
+    .grid { grid-template-columns: 1fr; }
+    nav .links a:not(.gh) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><div class="cube" style="--s:30px"><i></i><i></i></div>IRIS<b>OS</b></a>
+    <div class="links">
+      <a href="#iris">Iris</a><a href="#install">Install</a><a href="#updates">Updates</a>
+      <a class="gh" href="https://github.com/pantr1x/irisos-repo">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <h1>The OS with an AI<br><span>that lives inside it.</span></h1>
+      <p class="lead">IrisOS is a fast Linux desktop built on CachyOS and KDE Plasma – with <b>Iris</b>, a voice assistant that sees your windows,
+        clicks buttons, types for you and installs apps. Everything runs on your own PC, offline.</p>
+      <div class="btns">
+        <a class="btn primary" href="#download">⬇&nbsp; Download IrisOS</a>
+        <a class="btn" href="#iris">Meet Iris</a>
+      </div>
+      <div class="meta" id="hero-meta">x86_64 · UEFI or BIOS · loading the latest version…</div>
+    </div>
+    <div class="art"><div class="cube" style="--s:210px"><i></i><i></i></div></div>
+  </div>
+</div>
+
+<section id="iris"><div class="wrap">
+  <h2>Meet Iris</h2>
+  <p class="sub">Say “Iris” – she wakes up, listens and does it. No cloud, no account.</p>
+  <div class="grid">
+    <div class="card"><div class="ico">🗣️</div><h3>Talks and listens</h3><p>Whisper for hearing, Kokoro for her voice, echo cancellation so she never hears herself.</p></div>
+    <div class="card"><div class="ico">🖱️</div><h3>Uses your apps</h3><p>Sees every window and its buttons as a map, clicks them, writes into fields, moves and arranges windows.</p></div>
+    <div class="card"><div class="ico">🔒</div><h3>Fully local</h3><p>The AI model runs on your GPU through Ollama. Nothing you say leaves the PC.</p></div>
+    <div class="card"><div class="ico">🧩</div><h3>Picks the right model</h3><p>The installer measures your GPU and RAM and offers 4B, 9B, 14B or 27B – you see how each will run before you choose.</p></div>
+    <div class="card"><div class="ico">🎮</div><h3>Steps aside in games</h3><p>When a game starts she moves off the GPU, so nothing stutters. CachyOS kernel and gaming packages included.</p></div>
+    <div class="card"><div class="ico">🎛️</div><h3>You're in control</h3><p>Iris Center shows her memory use and history, lets you chat, switch off what she may do and write her personality.</p></div>
+  </div>
+</div></section>
+
+<section id="download"><div class="wrap">
+  <h2>Download</h2>
+  <p class="sub" id="dl-sub">The ISO is split into parts because GitHub allows 2 GB per file.</p>
+  <div class="dl" id="dl-files"><div class="note">Loading the latest ISO…</div></div>
+  <p class="note" style="margin-top:18px">Join the parts and check them:</p>
+  <pre><button class="copy">copy</button><code id="join-cmd">cat irisos-*.iso.part-* > irisos.iso
+sha256sum -c --ignore-missing SHA256SUMS</code></pre>
+</div></section>
+
+<section id="install"><div class="wrap">
+  <h2>Install</h2>
+  <p class="sub">About 15 minutes. You can keep Windows or another Linux next to it.</p>
+  <div class="steps">
+    <div class="step"><div><h3>Write it to a USB stick</h3><p>Everything on the stick is erased. Use Ventoy, Impression, Fedora Media Writer, or:</p>
+      <pre><button class="copy">copy</button><code>sudo dd if=irisos.iso of=/dev/sdX bs=4M conv=fsync status=progress</code></pre></div></div>
+    <div class="step"><div><h3>Boot from it</h3><p>Turn off Secure Boot in the BIOS, pick the USB in the boot menu. The IrisOS installer starts by itself.</p></div></div>
+    <div class="step"><div><h3>Follow the installer</h3><p>Language, keyboard, disk (erase, install alongside, or your own partitions), user and the AI model for Iris.
+      Press <code>T</code> any time for a terminal, <code>L</code> to see the log.</p></div></div>
+    <div class="step"><div><h3>Log in and say “Iris”</h3><p>On the first start IrisOS downloads Iris's model with a progress bar, then she introduces herself.</p></div></div>
+  </div>
+</div></section>
+
+<section id="updates"><div class="wrap">
+  <h2>Updates</h2>
+  <p class="sub">After you turn on your PC, IrisOS checks for updates and asks you – it tells you what's new and whether anything needs care (new kernel, drivers, Arch news). Nothing installs without your OK.</p>
+  <p class="note">IrisOS updates come from the <code>[irisos]</code> pacman repository on this GitHub. It's added automatically; by hand it looks like this:</p>
+  <pre><button class="copy">copy</button><code>[irisos]
+SigLevel = Optional TrustAll
+Server = https://github.com/pantr1x/irisos-repo/releases/download/$arch</code></pre>
+  <p class="note" style="margin-top:14px">Update any time from the Welcome app (<b>Update packages</b>) or with <code>sudo pacman -Syu</code>.</p>
+</div></section>
+
+<div class="wrap">
+  <footer>
+    <div>IrisOS · made by <a href="https://pantr1x.com">pantr1x</a> · based on CachyOS & Arch Linux</div>
+    <div><a href="https://github.com/pantr1x/irisos-repo/releases">All releases</a></div>
+  </footer>
+</div>
+
+<script>
+  // copy buttons
+  document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", () => {
+    navigator.clipboard.writeText(b.nextElementSibling.textContent).then(() => { b.textContent = "copied"; setTimeout(() => b.textContent = "copy", 1500) })
+  }))
+  // najnovšie ISO z GitHub Releases (vydania iso-*)
+  const gb = n => (n / 1e9).toFixed(2) + " GB"
+  fetch("https://api.github.com/repos/pantr1x/irisos-repo/releases?per_page=30")
+    .then(r => r.json())
+    .then(rels => {
+      const iso = rels.filter(r => r.tag_name.startsWith("iso-") && !r.draft).sort((a, b) => b.published_at.localeCompare(a.published_at))[0]
+      const box = document.getElementById("dl-files")
+      if (!iso) { box.innerHTML = '<div class="note">No ISO published yet – check back soon.</div>'; return }
+      const ver = iso.tag_name.slice(4)
+      const assets = iso.assets.sort((a, b) => a.name.localeCompare(b.name))
+      const total = assets.filter(a => a.name.includes(".part-")).reduce((s, a) => s + a.size, 0)
+      document.getElementById("hero-meta").textContent = `Version ${ver} · ${gb(total)} · x86_64 · UEFI or BIOS`
+      document.getElementById("dl-sub").textContent = `IrisOS ${ver}, released ${new Date(iso.published_at).toLocaleDateString()}. Download every part plus SHA256SUMS – GitHub allows 2 GB per file.`
+      box.innerHTML = assets.map(a => `<a class="file" href="${a.browser_download_url}"><span>⬇ ${a.name}</span><span class="size">${a.name.includes(".part-") ? gb(a.size) : "checksums"}</span></a>`).join("")
+      const name = `irisos-${ver}.iso`
+      document.getElementById("join-cmd").textContent = `cat ${name}.part-* > ${name}\nsha256sum -c --ignore-missing SHA256SUMS`
+    })
+    .catch(() => { document.getElementById("dl-files").innerHTML = '<div class="note">Couldn\'t load the list – <a href="https://github.com/pantr1x/irisos-repo/releases">open the releases page</a>.</div>' })
+</script>
+</body>
+</html>
